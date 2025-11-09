@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ## NOTICE
 
 This repository contains the public FTC SDK for the DECODE (2025-2026) competition season.
@@ -1682,3 +1683,7 @@ Changes include:
  * The API for the Legacy Module and Core Device Interface Module have been updated.
    - Support for encoders with the Legacy Module is now working.
  * The hardware loop has been updated for better performance.
+=======
+# FTC-vietnam-2025---2026-FPT-Da-Nang-Antech
+this is a project code for robot of team 23321 and 28668. This code have both autonomous and teleop.
+>>>>>>> 200f7fd64ae1832e1850e86a41e697e72928bd23
