@@ -21,7 +21,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 34
+    compileSdk 34
 
     signingConfigs {
         release {
@@ -105,7 +105,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-
+    packagingOptions {
+        pickFirst '**/*.so'
+    }
     ndkVersion '21.3.6528147'
 }
 
