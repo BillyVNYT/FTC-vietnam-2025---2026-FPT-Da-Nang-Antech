@@ -19,11 +19,11 @@ public class Auto extends OpMode {
 
     public enum PathState {
         PICK_UP1,
-        PAUSE,
+        SHOOT,
         PICK_UP2,
         LOW_ZONE,
         HIGH_ZONE,
-        LEAVE,
+        LEAVE,loop
     }
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
@@ -32,7 +32,7 @@ public class Auto extends OpMode {
     private Timer pathTimer;
     public PathChain pickup1, lowScore, pickup2, highScore;
     public Pose lowZonePose = new Pose(80, 16);
-    public Pose pickup1Pose = new Pose(123.312, 59.812);
+    public Pose pickup1Pose = new Pose(123.312, 1);
     public Pose pickup2Pose = new Pose(119.215, 82.959);
     public Pose highZonePose = new Pose(77.838, 77.838);
 
@@ -56,11 +56,7 @@ public class Auto extends OpMode {
         follower.update(); // Update Pedro Pathing
         pathState = autonomousPathUpdate(); // Update autonomous state machine
 
-        // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
-//        panelsTelemetry.debug("X", follower.getPose().getX());
-//        panelsTelemetry.debug("Y", follower.getPose().getY());
-//        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.update(telemetry);
     }
 
@@ -98,13 +94,13 @@ public class Auto extends OpMode {
                 .build();
     }
 
-    boolean paused = false;
+    boolean  shotTriggered = false;
     private PathState autonomousPathUpdate() {
         switch (pathState) {
-            case PAUSE:
+            case SHOOT:
                 if(follower.isBusy()) break;
 
-                if(!paused) {
+                if(!shotTriggered) {
                     follower.pausePathFollowing();
                     pathTimer.resetTimer();
                     paused = true;
