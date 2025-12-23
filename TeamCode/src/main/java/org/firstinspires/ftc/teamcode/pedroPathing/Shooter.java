@@ -6,11 +6,21 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
+//////////////////////////////////
+/// Ki hieu code               ///
+/// M: DCMotor                 ///
+/// S: Servo                   ///
+/// CS: Continous Servo        ///
+/// T: Timer                   ///
+/// I: Int                     ///
+/// F: double                  ///
+/// Th: thread                 ///
+/// B: Boolean                 ///
+/// Ds: distance               ///
+//////////////////////////////////
 public class Shooter extends LinearOpMode {
     public DcMotorEx Mshooter;
     double maxTPS = Mshooter.getMotorType().getAchieveableMaxTicksPerSecond();
-    ElapsedTime timer = new ElapsedTime();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -19,7 +29,6 @@ public class Shooter extends LinearOpMode {
         Mshooter.setDirection(DcMotorSimple.Direction.REVERSE);
         Mshooter.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(0.0002, 0, 0.00001, 1/maxTPS));
 
-        timer.reset();
         while (opModeIsActive()){
 
         }
