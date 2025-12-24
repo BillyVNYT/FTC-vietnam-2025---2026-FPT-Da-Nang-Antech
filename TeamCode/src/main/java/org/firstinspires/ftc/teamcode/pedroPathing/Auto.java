@@ -8,7 +8,6 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -23,13 +22,13 @@ public class Auto extends OpMode {
         PICK_UP2,
         LOW_ZONE,
         HIGH_ZONE,
-        LEAVE,loop
+        LEAVE,
     }
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     private PathState pathState, nextPathState;
+    private ShooterLogic shooter;
 
-    private Timer pathTimer;
     public PathChain pickup1, lowScore, pickup2, highScore;
     public Pose lowZonePose = new Pose(80, 16);
     public Pose pickup1Pose = new Pose(123.312, 59.812);
@@ -47,13 +46,15 @@ public class Auto extends OpMode {
         follower.setStartingPose(new Pose(80, 16, Math.toRadians(90)));
         buildPath(follower);
 
-        pathTimer = new Timer();
+        shooter.init(hardwareMap);
         setPathState(PathState.PICK_UP1);
     }
 
     @Override
     public void loop() {
         follower.update(); // Update Pedro Pathing
+        shooter.update(); // Update shooter logic
+
         pathState = autonomousPathUpdate(); // Update autonomous state machine
 
         panelsTelemetry.debug("Path State", pathState);
@@ -101,13 +102,10 @@ public class Auto extends OpMode {
                 if(follower.isBusy()) break;
 
                 if(!shotTriggered) {
-                    follower.pausePathFollowing();
-                    pathTimer.resetTimer();
-                    paused = true;
-                }
-                if(pathTimer.getElapsedTime() > 3000) {
-                    follower.resumePathFollowing();
-                    paused = false;
+                    shooter.fireShots(3, true);
+                    shotTriggered = true;
+                } else if(!shooter.isBusy()) {
+                    shotTriggered = false;
                     setPathState(nextPathState);
                 }
                 break;
@@ -118,7 +116,7 @@ public class Auto extends OpMode {
             case LOW_ZONE:
                 if(!follower.isBusy()) {
                     follower.followPath(lowScore);
-                    setPathState(PathState.PAUSE);
+                    setPathState(PathState.SHOOT);
                     nextPathState = PathState.PICK_UP2;
                 }
                 break;
@@ -131,7 +129,7 @@ public class Auto extends OpMode {
             case HIGH_ZONE:
                 if(!follower.isBusy()) {
                     follower.followPath(highScore);
-                    setPathState(PathState.PAUSE);
+                    setPathState(PathState.SHOOT);
                     nextPathState = PathState.LEAVE;
                 }
                 break;
