@@ -121,10 +121,8 @@ public class Auto extends OpMode {
                 }
                 break;
             case PICK_UP2:
-                if(!follower.isBusy()) {
-                    follower.followPath(pickup2);
-                    setPathState(PathState.HIGH_ZONE);
-                }
+                follower.followPath(pickup2);
+                setPathState(PathState.HIGH_ZONE);
                 break;
             case HIGH_ZONE:
                 if(!follower.isBusy()) {
