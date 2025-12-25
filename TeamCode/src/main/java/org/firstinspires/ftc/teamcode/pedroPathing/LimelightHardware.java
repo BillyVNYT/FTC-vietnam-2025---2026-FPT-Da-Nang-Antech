@@ -49,4 +49,17 @@ public class LimelightHardware {
         }
         return new ApriltagData(0, 0, 0, 0);
     }
+    public double getDistance(){
+        LLResult result = limelight.getLatestResult();
+
+        if(result != null && result.isValid()){
+            List<FiducialResult> fiducials = result.getFiducialResults();
+            for (FiducialResult fiducial : fiducials){
+                if(fiducial.getFiducialId() == 20 || fiducial.getFiducialId() == 24){
+                    return 153.3*Math.pow(result.getTa(), 0.629);
+                }
+            }
+        }
+        return 0;
+    }
 }
