@@ -95,13 +95,13 @@ public class Auto extends OpMode {
             case SHOOT:
                 if(follower.isBusy()) break;
 
-                if(!shotTriggered) {
-                    shooter.fireShots(3, true);
-                    shotTriggered = true;
-                } else if(!shooter.isBusy()) {
-                    shotTriggered = false;
-                    setPathState(nextPathState);
-                }
+//                if(!shotTriggered) {
+//                    shooter.fireShots(3, true);
+//                    shotTriggered = true;
+//                } else if(!shooter.isBusy()) {
+//                    shotTriggered = false;
+                setPathState(nextPathState);
+//                }
                 break;
             case PICK_UP1:
                 follower.followPath(pickup1);

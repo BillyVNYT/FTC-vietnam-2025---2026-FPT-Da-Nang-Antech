@@ -58,6 +58,9 @@ public class GenericAuto {
                     .setLinearHeadingInterpolation(pathPose.startHeading, pathPose.endHeading)
                     .build();
         }
+
+        states[pathPoses.length] = PathState.LEAVE;
+        pathState = states[0];
     }
 
     boolean  shotTriggered = false;
