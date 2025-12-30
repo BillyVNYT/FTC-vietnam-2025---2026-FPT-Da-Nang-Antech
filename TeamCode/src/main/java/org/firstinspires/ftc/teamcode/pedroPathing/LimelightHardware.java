@@ -25,6 +25,9 @@ class ApriltagData{
 
 public class LimelightHardware {
     public Limelight3A limelight;
+    private static final double CAMERA_HEIGHT = 0.08;  // 8 cm
+    private static final double TAG_HEIGHT    = 0.75;  // ví dụ tag trên backdrop
+    private static final double CAMERA_PITCH  = 39.0;  // độ (ước lượng từ ảnh)
     public LimelightHardware(HardwareMap hardwareMap){
         limelight = hardwareMap.get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
@@ -65,7 +68,12 @@ public class LimelightHardware {
             double x = fiducial.getTargetPoseCameraSpace().getPosition().x;
             double y = fiducial.getTargetPoseCameraSpace().getPosition().y;
             double z = fiducial.getTargetPoseCameraSpace().getPosition().z;
-            return Math.sqrt(x*x + y*y + z*z);
+            double angleRad = Math.toRadians(CAMERA_PITCH + y);
+            double heightDiff = TAG_HEIGHT - CAMERA_HEIGHT;
+
+            if (Math.abs(Math.tan(angleRad)) < 1e-3) return -1;
+
+            return heightDiff / Math.tan(angleRad);
         }
         return 0;
     }
