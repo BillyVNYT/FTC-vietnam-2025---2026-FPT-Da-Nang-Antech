@@ -63,6 +63,7 @@ public class Shooter extends LinearOpMode {
             for (int i = 0; i < count; i++) sum += buffer[i];
             telemetry.addData("s0", Sdegree.getPosition());
             telemetry.addData("dis", limelightHardware.getDistance());
+            telemetry.addData("dis pro", limelightHardware.getDistanceByTargetPose());
             telemetry.addData("obj", limelightHardware.getAprilTagData().area);
             telemetry.addData("tpr shot", sum / count);
             telemetry.addData("tx", limelightHardware.getAprilTagData().x);
