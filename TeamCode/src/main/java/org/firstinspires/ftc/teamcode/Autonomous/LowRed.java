@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 @Autonomous
 @Configurable // Panels
 public class LowRed extends OpMode {
-    GenericAuto auto = new GenericAuto();
     Pose startPose = new Pose(80, 16, Math.toRadians(90));
     Pose lowZonePose = new Pose(81.115, 5.735);
     Pose pickup1Pose = new Pose(121.468, 36.871);
@@ -26,10 +25,11 @@ public class LowRed extends OpMode {
             new PathPoses(Math.toRadians(0), Math.toRadians(135), pickup2ToHighScorePoses, GenericAuto.PathState.LAUNCH_ZONE)
     };
 
+    GenericAuto auto;
 
     @Override
     public void init() {
-        auto.init(telemetry, hardwareMap, startPose, pathPoses);
+        auto = new GenericAuto(telemetry, hardwareMap, startPose, pathPoses);
     }
 
 

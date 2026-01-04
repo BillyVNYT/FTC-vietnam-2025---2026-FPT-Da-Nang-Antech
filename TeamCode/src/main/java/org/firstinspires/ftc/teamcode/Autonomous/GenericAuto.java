@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.pedroPathing;
+package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
@@ -7,10 +7,12 @@ import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Curve;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.paths.PathBuilder;
 import com.pedropathing.paths.PathChain;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.pedroPathing.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,25 +24,20 @@ public class GenericAuto {
         SHOOT,
         LEAVE,
     }
-    private TelemetryManager panelsTelemetry; // Panels Telemetry instance
-    public Follower follower; // Pedro Pathing follower instance
-    private ShooterLogic shooter;
-
-    private List<PathChain> paths;
-    private List<PathState> states;
-    private PathState currentState;
+    private final TelemetryManager panelsTelemetry;
+    public Follower follower;
+    private final List<PathChain> paths = new ArrayList<>();
+    private final List<PathState> states = new ArrayList<>();;
+    private PathState currentState ;
     private int curPathIdx = 0;
     boolean  shotTriggered = false;
 
-    public void init(Telemetry telemetry, HardwareMap hardwareMap, Pose startPose, PathPoses[] pathPoses) {
+    public GenericAuto(Telemetry telemetry, HardwareMap hardwareMap, Pose startPose, PathPoses[] pathPoses) {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
         panelsTelemetry.debug("Status", "Initialized");
 
         follower = Constants.createFollower(hardwareMap);
         follower.setStartingPose(startPose);
-
-        shooter = new ShooterLogic();
-        shooter.init(hardwareMap);
 
         buildPaths(follower, pathPoses);
 
@@ -54,9 +51,6 @@ public class GenericAuto {
     }
     
     private void buildPaths(Follower follower, PathPoses[] pathPoses) {
-        paths = new ArrayList<>();
-        states = new ArrayList<>();
-
         for (PathPoses pathSegment : pathPoses) {
             Curve curve;
             if (pathSegment.poses.length == 2) {
@@ -65,11 +59,12 @@ public class GenericAuto {
                 curve = new BezierCurve(pathSegment.poses[0], pathSegment.poses[1], pathSegment.poses[2]);
             }
 
+            PathBuilder pathBuilder = follower.pathBuilder().addPath(curve);
+            if(pathSegment.endHeading < 0) pathBuilder.setConstantHeadingInterpolation(pathSegment.startHeading);
+            else pathBuilder.setLinearHeadingInterpolation(pathSegment.startHeading, pathSegment.endHeading);
+
+            paths.add(pathBuilder.build());
             states.add(pathSegment.type);
-            paths.add(follower.pathBuilder()
-                    .addPath(curve)
-                    .setLinearHeadingInterpolation(pathSegment.startHeading, pathSegment.endHeading)
-                    .build());
         }
     }
 
@@ -81,7 +76,7 @@ public class GenericAuto {
         switch (currentState) {
             case SHOOT:
                 if (!shotTriggered) {
-                    // shooter.fireShots(3, true); // Example
+                    // shooter.shoot();
                     shotTriggered = true;
                 }
 
@@ -100,22 +95,22 @@ public class GenericAuto {
                 break;
             case LEAVE:
                 panelsTelemetry.addData("done", "leave");
+                goToNextPath();
                 break;
         }
     }
 
     private void goToNextPath() {
         curPathIdx++;
-        if (curPathIdx < paths.size()) {
-            currentState = states.get(curPathIdx);
-            PathChain currentPath = paths.get(curPathIdx);
-            follower.followPath(currentPath);
-        } else currentState = PathState.LEAVE;
+        if (curPathIdx >= paths.size()) return;
+
+        currentState = states.get(curPathIdx);
+        PathChain currentPath = paths.get(curPathIdx);
+        follower.followPath(currentPath);
     }
 
     public void updateFollower(Telemetry telemetry) {
         follower.update();
-        shooter.update();
         autonomousPathUpdate();
 
         panelsTelemetry.debug("Path State", currentState);
