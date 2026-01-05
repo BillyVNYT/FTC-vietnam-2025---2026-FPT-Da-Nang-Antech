@@ -1,141 +1,146 @@
+
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
+//import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+//import org.firstinspires.ftc.teamcode.ObeliskData;
 
-/*
-* NOTING:
-*
-*
-* */
+
 public class SortBall {
-    Servo SortBall;
-    boolean slot3isfull=false;
-    boolean slot2isfull=false;
-    boolean slot1isfull=false;
-    DcMotor PushBall;
-    AnalogInput analog0;
-    public char[] BallColor = new char[3];
 
-    double volt = analog0.getVoltage();    // giá trị voltage 0–3.3V
-    double vmax = analog0.getMaxVoltage();   // thường 3.3V
-    int raw1 = (int) ((analog0.getVoltage() / analog0.getMaxVoltage()) * 4095);
-    int raw2 = (int) ((analog0.getVoltage() / analog0.getMaxVoltage()) * 4095);
-    int convertedApriltagID =36;//lime light docapril tag xong chuyen thanh ma
+    // ===== Hardware =====
+    private Servo sortServo;
+    private DcMotor pushBall;
+    private AnalogInput analog0;
 
-    final double Slot1pos=0.5;
-    final double Slot2pos=0.75;
+    // ===== Constants =====
+    private static final double SLOT1_POS = 0.5;
+    private static final double SLOT2_POS = 0.75;
+    private static final double SLOT3_POS = 1.0;
 
-    final int purple=3669;//mau tim,sua lai sau
-    final int green=3636;//mau xanh,sua lai sau
-    ColorSensor slot1;
-    ColorSensor slot2;
-    ColorSensor slot3;
-    private AutoTrackStartMatch autoTrackStartMatch;
-    public SortBall(HardwareMap hardwareMap){
-        autoTrackStartMatch = new AutoTrackStartMatch(hardwareMap);
-        SortBall = hardwareMap.get(Servo.class, "s3");
-        analog0 = hardwareMap.get(AnalogInput.class, "analog0");
-        PushBall=hardwareMap.get(DcMotor.class,"m36");
-        SortBall.setPosition(0);
-//        obeliskData = new ObeliskData();
+    private static final int PURPLE = 3669;
+    private static final int GREEN  = 3636;
+
+    private static final int TAG_GPP = 36;
+    private static final int TAG_PPG = 84;
+    private static final int TAG_PGP = -48;
+
+    // ===== State =====
+    private boolean[] slotFull = new boolean[3];
+    private char[] ballColor = new char[3];
+
+    private int convertedAprilTagID = 36;
+
+    // ===== Constructor =====
+    public SortBall(HardwareMap hardwareMap) {
+        sortServo = hardwareMap.get(Servo.class, "s3");
+        pushBall  = hardwareMap.get(DcMotor.class, "m36");
+        analog0   = hardwareMap.get(AnalogInput.class, "analog0");
+
+        sortServo.setPosition(0);
     }
-    public char CheckColor(int color){
-        if(color==purple)
-            //neu la mau tim purple
-            return 'p';
-        else if(color==green)
-             //neu la mau xanh green
-            return 'g';
+
+    // ===== Color detection =====
+    private char detectColor(int raw) {
+        if (raw == PURPLE) return 'p';
+        if (raw == GREEN)  return 'g';
         return '0';
     }
-    public void checkSlot1(int raw){
-        if(CheckColor(raw)!='0'){
-            if(CheckColor(raw)=='p'){
-                BallColor[0]='p';
-                slot1isfull=true;
-            }
-            if(CheckColor(raw)=='g'){
-                BallColor[0]='g';
-                slot1isfull=true;
-            }
 
-        }
-        slot1isfull=false;
-    }
-    public void checkSlot2(int raw){
-        if(CheckColor(raw)!='0'){
-            if(CheckColor(raw)=='p'){
-                BallColor[1]='p';
-                slot2isfull=true;
-            }
-            if(CheckColor(raw)=='g'){
-                BallColor[1]='g';
-                slot2isfull=true;
-            }
-        }
-        slot2isfull=false;
-    }
-    public void checkSlot3(int raw){
-        if(CheckColor(raw)!='0'){
-            if(CheckColor(raw)=='p'){
-                BallColor[2]='p';
-                slot3isfull=true;
-            }
-            if(CheckColor(raw)=='g'){
-                BallColor[2]='g';
-                slot3isfull=true;
-            }
-        }
-        slot3isfull=false;
-    }
-    public void SetNeededPosition(){
-        while(slot1isfull&&slot2isfull&&slot3isfull){//bo sung sau, ktra xem da full 3 bong chx
-            if(convertedApriltagID == 36) {//de dai so vi ko nho(xu li trong truong hop la 'g','p','p')
-                for (int i = 0; i < 3; i++) {//                 .
+    // ===== Slot update =====
+    public void updateSlot(int slotIndex, int raw) {
+        char color = detectColor(raw);
 
-                    if (BallColor[i] == 'g') {
-                        PushBall.setPower(1);//bat dau day bong len,luu y chinh lai huong motor sau
-                    }
-                    SortBall.setPosition(0.5);//quay toi o tiep theo, chinh lai pos sau
-                }
-            }else if (convertedApriltagID==84){//de dai so vi ko nho(xu li trong truong hop la 'p','p','g')
-                if(BallColor[0]=='p'&&BallColor[1]=='p') {//     .
-                    SortBall.setPosition(0.5);//quay toi slot 1
-                    PushBall.setPower(1);//bat dau day bong len + xoay sorter qua trai
-                } else if (BallColor[1]=='p'&&BallColor[2]=='p'){
-                    SortBall.setPosition(0.75);//quay toi slot 2
-                    PushBall.setPower(1);//bat dau day bong len + xoay sorter qua trai
-                } else if (BallColor[2]=='p'&&BallColor[0]=='p') {
-                    SortBall.setPosition(1);//quay toi slot 3
-                    PushBall.setPower(1);//bat dau day bong len
-
-                }
-            } else if (convertedApriltagID==-48) {//de dai so vi ko nho(xu li trong truong hop la 'p','g','p')
-                if(BallColor[0]=='p'&&BallColor[2]=='p') {//          .
-                    SortBall.setPosition(0.5);//quay toi slot 1
-                    PushBall.setPower(1);//bat dau day bong len + xoay sorter qua trai
-                }
-                else if(BallColor[1]=='p'&&BallColor[0]=='p'){
-                    SortBall.setPosition(0.75);//quay toi slot 2
-                    PushBall.setPower(1);//bat dau day bong len + xoay sorter qua trai
-                }
-                else if(BallColor[2]=='p'&&BallColor[1]=='p'){
-                    SortBall.setPosition(1);//quay toi slot 3
-                    PushBall.setPower(1);//bat dau day bong len + xoay sorter qua trai
-                }
-            }
+        if (color != '0') {
+            slotFull[slotIndex] = true;
+            ballColor[slotIndex] = color;
         }
     }
-//    public boolean checkBall(ColorSensor colorSensor){
-////        if(colorSensor.blue() > colorSensor.red()){
-////            return 0;
-////        } else {
-////            return 1;
-////        }
-//        return colorSensor.blue() > colorSensor.red();
-//    }
+
+    private boolean allSlotsFull() {
+        return slotFull[0] && slotFull[1] && slotFull[2];
+    }
+
+    // ===== Servo decision =====
+    public void setNeededPosition() {
+        if (!allSlotsFull()) return;
+        boolean moved = false;
+        switch (convertedAprilTagID) {
+
+            case TAG_GPP:
+                if (ballColor[1]=='p' && ballColor[2]=='p') {
+                    sortServo.setPosition(SLOT1_POS);
+                    moved = true;
+                }
+                else if (ballColor[0]=='p' && ballColor[2]=='p') {
+                    sortServo.setPosition(SLOT2_POS);
+                    moved = true;
+                }
+                else if (ballColor[0]=='p' && ballColor[1]=='p') {
+                    sortServo.setPosition(SLOT3_POS);
+                    moved = true;
+                }
+                break;
+
+            case TAG_PPG:
+                if (ballColor[0] == 'p' && ballColor[1] == 'p') {
+                    sortServo.setPosition(SLOT1_POS);
+                    moved = true;
+                }
+                else if (ballColor[1]=='p'&&ballColor[2]=='p') {
+                    sortServo.setPosition(SLOT2_POS);
+                    moved = true;
+                }
+                else if (ballColor[2]=='p'&&ballColor[0]=='p') {
+                    sortServo.setPosition(SLOT3_POS);
+                    moved = true;
+                }
+                break;
+
+
+            case TAG_PGP:
+                if (ballColor[0] == 'p' && ballColor[2] == 'p') {
+                    sortServo.setPosition(SLOT1_POS);
+                    moved = true;
+                }
+                else if (ballColor[1]=='p'&&ballColor[0]=='p') {
+                    sortServo.setPosition(SLOT2_POS);
+                    moved = true;
+                }
+                else if (ballColor[2]=='p'&&ballColor[1]=='p') {
+                    sortServo.setPosition(SLOT3_POS);
+                    moved = true;
+                }
+                break;
+            default:
+                return;
+        }
+
+        if(moved){
+            resetSlots();
+        }
+    }
+
+
+
+    private double getSlotPosition(int slot) {
+        switch (slot) {
+            case 0: return SLOT1_POS;
+            case 1: return SLOT2_POS;
+            case 2: return SLOT3_POS;
+        }
+        return 0;
+    }
+
+    private void resetSlots() {
+        for (int i = 0; i < 3; i++) {
+            slotFull[i] = false;
+            ballColor[i] = '0';
+        }
+    }
 }
+
+
