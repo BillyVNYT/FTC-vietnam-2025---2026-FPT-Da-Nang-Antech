@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 @Autonomous
 @Configurable // Panels
 public class FullBlueTopStart extends OpMode {
-    Pose startPose = new Pose(26.787, 128.303, Math.toRadians(90));
+    Pose startPose = new Pose(26.787, 128.303, Math.toRadians(180));
     Pose topZonePose = new Pose(63.810, 70.294);
     Pose pickupMidPose = new Pose(8.531, 59.204);
     Pose pickupGatePose = new Pose(11.261, 60.057);
@@ -29,22 +29,22 @@ public class FullBlueTopStart extends OpMode {
     Pose[] pickupLowToLowZonePoses = {pickupLowPose, lowZonePose};
     Pose[] lowZoneToLeavePoses = {lowZonePose, leavePose};
 
-    PathPoses[] pathPoses = {new PathPoses(Math.toRadians(90), startToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(90), topZoneToPickupMidPoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(90), pickupMidToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(90), Math.toRadians(55), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(55), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(55), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(55), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(55), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(55), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(55), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(55), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(55), Math.toRadians(90), topZoneToPickupTopPoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(90), pickupTopToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(90), topZoneToPickupLowPoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(90), pickupLowToLowZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(90), lowZoneToLeavePoses, GenericAuto.PathState.LEAVE)
+    PathPoses[] pathPoses = {new PathPoses(Math.toRadians(180), startToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(180), topZoneToPickupMidPoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(180), pickupMidToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(180), Math.toRadians(145), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(145), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(145), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(145), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(145), Math.toRadians(180), topZoneToPickupTopPoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(180), pickupTopToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(180), topZoneToPickupLowPoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(180), pickupLowToLowZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
+            new PathPoses(Math.toRadians(180), lowZoneToLeavePoses, GenericAuto.PathState.LEAVE)
     };
 
     GenericAuto auto;
