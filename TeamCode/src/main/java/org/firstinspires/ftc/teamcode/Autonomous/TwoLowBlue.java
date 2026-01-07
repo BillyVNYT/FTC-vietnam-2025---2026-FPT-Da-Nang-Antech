@@ -2,20 +2,18 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 
 import static org.firstinspires.ftc.teamcode.Autonomous.BluePathPoses.*;
+
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-
 @Autonomous
 @Configurable // Panels
-public class FullBlueTopStart extends OpMode {
-    public static Pose startPose = new Pose(26.787, 128.303, Math.toRadians(180));
-    public static Pose[] startToTopZonePoses = {startPose, topZonePose};
-
-    PathPoses[] pathPoses = {new PathPoses(Math.toRadians(180), startToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(180), topZoneToPickupMidPoses, GenericAuto.PathState.PICK_UP),
+public class TwoLowBlue extends OpMode {
+    Pose startPose = new Pose(53.062, 18.085, Math.toRadians(180));
+    Pose[] startToPickupMidPoses = {startPose, pickupMidPose};
+    PathPoses[] pathPoses = {new PathPoses(Math.toRadians(180), startToPickupMidPoses, GenericAuto.PathState.PICK_UP),
             new PathPoses(Math.toRadians(180), pickupMidToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
             new PathPoses(Math.toRadians(180), Math.toRadians(145), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
             new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
@@ -25,9 +23,7 @@ public class FullBlueTopStart extends OpMode {
             new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
             new PathPoses(Math.toRadians(145), topZoneToPickupGatePoses, GenericAuto.PathState.PICK_UP),
             new PathPoses(Math.toRadians(145), pickupGateToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(145), Math.toRadians(180), topZoneToPickupTopPoses, GenericAuto.PathState.PICK_UP),
-            new PathPoses(Math.toRadians(180), pickupTopToTopZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
-            new PathPoses(Math.toRadians(180), topZoneToPickupLowPoses, GenericAuto.PathState.PICK_UP),
+            new PathPoses(Math.toRadians(145), Math.toRadians(180), topZoneToPickupLowPoses, GenericAuto.PathState.PICK_UP),
             new PathPoses(Math.toRadians(180), pickupLowToLowZonePoses, GenericAuto.PathState.LAUNCH_ZONE),
             new PathPoses(Math.toRadians(180), lowZoneToLeavePoses, GenericAuto.PathState.LEAVE)
     };
