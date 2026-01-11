@@ -15,14 +15,7 @@ public class TestTCS34725 extends LinearOpMode {
 
         while (opModeIsActive()) {
             String color = colorSensor.detectBallColor();
-
-            if (color.equals("GREEN")) {
-                telemetry.addData("Result:", "BONG XANH");
-            } else if (color.equals("PURPLE")) {
-                telemetry.addData("Result:", "BONG TIM  ");
-            } else {
-                telemetry.addData("Result:", "KHONG THAY BONG");
-            }
+            telemetry.addData("Color:", color);
 
             // In ra để debug nếu cần
             telemetry.addData("Raw R", colorSensor.getRed());
